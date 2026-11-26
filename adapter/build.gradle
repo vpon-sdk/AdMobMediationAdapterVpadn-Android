@@ -1,0 +1,47 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    namespace 'com.vpadn.mediation'
+    compileSdk 34
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    defaultConfig {
+        minSdk 21
+        consumerProguardFiles "consumer-rules.pro"
+        buildConfigField("String", "VERSION_NAME", "\"${ADAPTER_VERSION}\"")
+    }
+
+    buildTypes {
+        release {
+            // The adapter AAR is intentionally not obfuscated: AdMob looks the adapter up by
+            // its class name, and apps call VpadnAdapter.getVponObstruction() directly.
+            minifyEnabled false
+        }
+    }
+
+    libraryVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "admob-adapter-${ADAPTER_VERSION}.aar"
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    kotlinOptions {
+        jvmTarget = "11"
+    }
+}
+
+dependencies {
+    compileOnly "com.google.android.gms:play-services-ads:${PLAY_SERVICES_ADS_VERSION}"
+    compileOnly "com.vpon:vpadnSDK:${VPON_SDK_VERSION}"
+}
